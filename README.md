@@ -193,3 +193,26 @@ docker compose exec terraform terraform apply
 docker compose exec aws aws sts get-caller-identity
 docker compose exec aws aws s3 ls
 ```
+
+## Architecture Diagram
+
+This diagram represents the high-level architecture of the subscription API.
+
+```mermaid
+
+graph TD
+    subgraph AWS
+        APIGateway
+
+        subgraph VPC
+            RDB
+            LambdaFunction
+            TerraformState
+        end
+
+    end
+
+    Internet((fa:fa-globe Internet)) --> APIGateway[API Gateway]
+    APIGateway[API Gateway] --> LambdaFunction
+    LambdaFunction <--> RDB
+```
