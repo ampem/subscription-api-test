@@ -94,6 +94,39 @@ docker compose exec aws aws s3api put-public-access-block \
 
 > **Note:** For regions other than `us-east-1`, add `--create-bucket-configuration LocationConstraint=<region>` to the create-bucket command.
 
+## ECR Authentication
+
+To push Docker images to ECR, authenticate Docker with your registry.
+
+### Get your AWS account ID
+
+```bash
+docker compose exec aws aws sts get-caller-identity --query Account --output text
+```
+
+### Login to ECR
+
+```bash
+docker compose exec aws aws ecr get-login-password --region us-east-1 | \
+  docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
+```
+
+Replace `<account-id>` with your AWS account ID from the previous command.
+
+### Build and push an image
+
+```bash
+# Build the Lambda image
+docker build -f api/Dockerfile.lambda -t shade-subscription-api-staging:latest ./api
+
+# Tag for ECR
+docker tag shade-subscription-api-staging:latest \
+  <account-id>.dkr.ecr.us-east-1.amazonaws.com/shade-subscription-api-staging:latest
+
+# Push to ECR
+docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/shade-subscription-api-staging:latest
+```
+
 ## Running Terraform
 
 ```bash
