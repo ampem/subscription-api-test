@@ -36,6 +36,6 @@ class Subscription(Base):
             current_time = datetime.now(datetime_UTC)
         if self.status != SubscriptionStatus.ACTIVE.value:
             return False
-        if self.end_date and current_time > self.end_date:
+        if self.end_date and current_time > self.end_date.replace(tzinfo=datetime_UTC):
             return False
         return True

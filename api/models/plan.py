@@ -37,5 +37,5 @@ class Plan(Base):
         if current_time is None:
             current_time = datetime.now(datetime_UTC)
         if self.active_to is None:
-            return current_time >= self.active_from
-        return self.active_from <= current_time <= self.active_to
+            return current_time >= self.active_from.replace(tzinfo=datetime_UTC)
+        return self.active_from.replace(tzinfo=datetime_UTC) <= current_time <= self.active_to.replace(tzinfo=datetime_UTC)
