@@ -9,7 +9,28 @@ services:
       - ./api:/app
     environment:
       - ENVIRONMENT=local
+      - DATABASE_URL=mysql+pymysql://${DB_USER:-shade}:${DB_PASSWORD:-shade}@db:3306/${DB_NAME:-shade}
     user: "${UID:-1000}:${GID:-1000}"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mariadb:11
+    ports:
+      - "3306:3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-rootpassword}
+      - MARIADB_DATABASE=${DB_NAME:-shade}
+      - MARIADB_USER=${DB_USER:-shade}
+      - MARIADB_PASSWORD=${DB_PASSWORD:-shade}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   terraform:
     image: hashicorp/terraform:1.14.3
@@ -38,3 +59,6 @@ services:
     user: "${UID:-1000}:${GID:-1000}"
     entrypoint: [""]
     command: ["tail", "-f", "/dev/null"]
+
+volumes:
+  db_data:
