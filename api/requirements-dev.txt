@@ -1,0 +1,6 @@
+-r requirements-ci.txt
+
+# Development tools
+faker>=33.0.0
+ipython>=8.0.0
+ipdb>=0.13.0
