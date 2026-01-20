@@ -12,6 +12,7 @@ Options:
 
 import argparse
 from datetime import datetime, timedelta
+from datetime import UTC as datetime_UTC
 from decimal import Decimal
 from faker import Faker
 import random
@@ -37,7 +38,7 @@ def format_decimal(value: Decimal) -> str:
 def generate_plans() -> list[dict]:
     """Generate plan data for current year and next year."""
     plans = []
-    now = datetime.utcnow()
+    now = datetime.now(datetime_UTC)
     current_year = now.year
     next_year = current_year + 1
 
@@ -124,7 +125,7 @@ def generate_users_and_subscriptions(num_users: int, plans: list[dict]) -> tuple
     """Generate users with various subscription states."""
     users = []
     subscriptions = []
-    now = datetime.utcnow()
+    now = datetime.now(datetime_UTC)
 
     # Get plan IDs by category
     current_year_plans = [p for p in plans if not p["simulation"] and p["active_from"].year == now.year]
@@ -242,7 +243,7 @@ def generate_users_and_subscriptions(num_users: int, plans: list[dict]) -> tuple
 
 def generate_sql(plans: list[dict], users: list[dict], subscriptions: list[dict]) -> str:
     """Generate SQL statements for all data."""
-    now = datetime.utcnow()
+    now = datetime.now(datetime_UTC)
     sql_lines = [
         "-- Seed data generated at " + format_datetime(now),
         "-- This script clears existing data and repopulates the database",

@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import UTC as datetime_UTC
 
 from sqlalchemy.orm import Session
 
@@ -18,7 +19,7 @@ class PlanRepository:
 
     def get_active_plans(self, current_time: datetime | None = None) -> list[Plan]:
         if current_time is None:
-            current_time = datetime.utcnow()
+            current_time = datetime.now(datetime_UTC)
         return (
             self.db.query(Plan)
             .filter(Plan.active_from <= current_time)

@@ -1,4 +1,6 @@
 from datetime import datetime
+from datetime import UTC as datetime_UTC
+
 from decimal import Decimal
 from enum import Enum
 
@@ -23,17 +25,17 @@ class Plan(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     billing_period: Mapped[str] = mapped_column(String(50), nullable=False)  # monthly, yearly
-    active_from: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    active_to: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    active_from: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    active_to: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     simulation: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(datetime_UTC))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(datetime_UTC), onupdate=lambda: datetime.now(datetime_UTC))
 
     subscriptions: Mapped[list["Subscription"]] = relationship(back_populates="plan")
 
     def is_active(self, current_time: datetime | None = None) -> bool:
         if current_time is None:
-            current_time = datetime.utcnow()
+            current_time = datetime.now(datetime_UTC)
         if self.active_to is None:
             return current_time >= self.active_from
         return self.active_from <= current_time <= self.active_to

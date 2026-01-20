@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import UTC as datetime_UTC
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
@@ -101,7 +102,7 @@ class SubscriptionService:
         update_data = SubscriptionUpdate(
             status=SubscriptionStatus.CANCELLED
         )
-        subscription.cancelled_at = datetime.utcnow()
+        subscription.cancelled_at = datetime.now(datetime_UTC)
         return self.repository.update(subscription, update_data)
 
     def delete_subscription(self, subscription_id: int) -> None:
