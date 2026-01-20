@@ -8,6 +8,7 @@ services:
     volumes:
       - ./api:/app
     environment:
+      - HOME=/app
       - ENVIRONMENT=local
       - DATABASE_URL=mysql+pymysql://${DB_USER:-shade}:${DB_PASSWORD:-shade}@db:3306/${DB_NAME:-shade}
     user: "${UID:-1000}:${GID:-1000}"
