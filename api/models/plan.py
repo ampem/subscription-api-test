@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 
-from sqlalchemy import String, DateTime, Numeric, Text
+from sqlalchemy import String, DateTime, Numeric, Text, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
@@ -25,6 +25,7 @@ class Plan(Base):
     billing_period: Mapped[str] = mapped_column(String(50), nullable=False)  # monthly, yearly
     active_from: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     active_to: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    simulation: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

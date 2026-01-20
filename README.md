@@ -48,6 +48,58 @@ A FastAPI application deployed to AWS Lambda via Terraform.
 
 4. Access the API at http://localhost:8000 (docs at http://localhost:8000/docs).
 
+## Database Migrations
+
+Run Alembic migrations to set up the database schema:
+
+```bash
+docker compose exec api alembic upgrade head
+```
+
+To create a new migration after modifying models:
+
+```bash
+docker compose exec api alembic revision --autogenerate -m "description of changes"
+```
+
+## Test Data
+
+A script is provided to generate seed data for development and testing.
+
+### Generate seed data
+
+```bash
+# Generate SQL file with 50 users (default)
+docker compose exec api python scripts/generate_seed_data.py
+
+# Generate with custom number of users
+docker compose exec api python scripts/generate_seed_data.py --users 100
+
+# Specify output file
+docker compose exec api python scripts/generate_seed_data.py --users 100 --output my_seed_data.sql
+```
+
+### Apply seed data to database
+
+```bash
+docker compose exec db mariadb -u shade -pshade shade < api/seed_data.sql
+```
+
+### What the seed data includes
+
+| Category | Description |
+|----------|-------------|
+| **Plans** | |
+| Current year | Free, Basic, Pro plans (monthly & yearly) active for all of current year |
+| Next year | Same tiers with 10% price increase, active next year |
+| Simulation | Plans marked with `simulation=true` for testing |
+| **Users** | |
+| No subscription | ~15% of users have no subscriptions |
+| Simulation mode | ~10% of users in simulation mode with simulation plans |
+| Active subscriptions | ~40% of users with active free/basic/pro subscriptions |
+| Lapsed subscriptions | ~20% of users with expired or cancelled subscriptions |
+| Future subscriptions | ~15% of users with subscriptions starting in the future |
+
 ## Creating Terraform State Buckets
 
 Before deploying infrastructure, create S3 buckets to store Terraform state.
