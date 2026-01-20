@@ -198,21 +198,5 @@ docker compose exec aws aws s3 ls
 
 This diagram represents the high-level architecture of the subscription API.
 
-```mermaid
+<img width="1318" height="1046" alt="image" src="https://github.com/user-attachments/assets/b2c9ea59-bee4-4bd1-bab4-562596884bf2" />
 
-graph TD
-    subgraph AWS
-        APIGateway
-
-        subgraph VPC
-            RDB
-            LambdaFunction
-            TerraformState
-        end
-
-    end
-
-    Internet((fa:fa-globe Internet)) --> APIGateway[API Gateway]
-    APIGateway[API Gateway] --> LambdaFunction
-    LambdaFunction <--> RDB
-```
