@@ -16,6 +16,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           token: ${{ secrets.SUBSCRIPTION_API_RELEASE_PLEASE_TOKEN }}
           release-type: python
+
+      - name: Remove source code assets
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GH_TOKEN: ${{ secrets.SUBSCRIPTION_API_RELEASE_PLEASE_TOKEN }}
+        run: |
+          TAG="${{ steps.release.outputs.tag_name }}"
+          REPO="${{ github.repository }}"
+          # List and delete all .zip and .tar.gz assets
+          gh release view "$TAG" --repo "$REPO" --json assets -q '.assets[].name' | while read -r asset; do
+            if [[ "$asset" == *.zip ]] || [[ "$asset" == *.tar.gz ]]; then
+              echo "Deleting $asset"
+              gh release delete-asset "$TAG" "$asset" --repo "$REPO" --yes || true
+            fi
+          done
