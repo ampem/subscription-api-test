@@ -65,5 +65,16 @@ services:
     entrypoint: [""]
     command: ["tail", "-f", "/dev/null"]
 
+  commitlint:
+    build:
+      context: ./docker/commitlint
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - .:/app
+    user: "${UID:-1000}:${GID:-1000}"
+    entrypoint: [""]
+    command: ["tail", "-f", "/dev/null"]
+
 volumes:
   db_data:

@@ -219,3 +219,8 @@ override.tf.json
 *_override.tf.json
 api/.bash_history
 api/.python_history
+
+# Node.js (dependencies managed in containers)
+node_modules/
+package-lock.json
+package.json
