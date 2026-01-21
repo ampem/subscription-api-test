@@ -79,6 +79,45 @@ resource "aws_ecr_lifecycle_policy" "api" {
   })
 }
 
+# VPC Configuration (assuming a VPC exists; use your VPC ID)
+data "aws_subnets" "private" {
+  filter {
+    name   = "vpc-id"
+    values = [var.vpc_id]
+  }
+}
+
+resource "aws_security_group" "lambda_sg" {
+  name        = "lambda_sg"
+  description = "Security group for Lambda"
+  vpc_id      = var.vpc_id  # Using variable as originally intended
+}
+
+resource "aws_security_group" "rds_sg" {
+  name        = "rds_sg"
+  description = "Security group for RDS"
+  vpc_id      = var.vpc_id  # Using variable as originally intended
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    security_groups = [aws_security_group.lambda_sg.id]  # Only allow from Lambda SG
+  }
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["15.235.193.126/32"]  # Allow access from bastion host
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # Lambda Function
 resource "aws_lambda_function" "api" {
   function_name = "${local.project_name}-${var.environment}"
@@ -92,6 +131,11 @@ resource "aws_lambda_function" "api" {
     variables = {
       ENVIRONMENT = var.environment
     }
+  }
+
+  vpc_config {
+    subnet_ids         = data.aws_subnets.private.ids
+    security_group_ids = [aws_security_group.lambda_sg.id]
   }
 }
 
@@ -198,4 +242,35 @@ resource "aws_route53_record" "api" {
     zone_id                = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].hosted_zone_id
     evaluate_target_health = false
   }
+}
+
+resource "aws_db_instance" "mariadb_staging" {
+  engine            = "mariadb"
+  engine_version    = "10.6"
+  instance_class    = "db.t3.micro"
+  allocated_storage = 5
+  db_name           = var.mariadb_db_name
+  username          = var.mariadb_db_username
+  password          = var.mariadb_db_password
+  skip_final_snapshot = true
+  publicly_accessible = false
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+}
+
+# IAM Policy for RDS Access
+resource "aws_iam_role_policy" "lambda_rds_access" {
+  name = "lambda_rds_access"
+  role = aws_iam_role.lambda_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "rds-db:connect"
+        ]
+        Resource = aws_db_instance.mariadb_staging.arn
+      }
+    ]
+  })
 }

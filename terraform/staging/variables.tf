@@ -19,3 +19,26 @@ variable "route53_zone_id" {
   description = "Route53 hosted zone ID"
   type        = string
 }
+
+variable "mariadb_db_name" {
+  description = "The name of the MariaDB database"
+  type        = string
+  sensitive   = true
+}
+
+variable "mariadb_db_username" {
+  description = "The username for the MariaDB database"
+  type        = string
+  sensitive   = true
+}
+
+variable "mariadb_db_password" {
+  description = "The password for the MariaDB database"
+  type        = string
+  sensitive   = true
+}
+
+variable "vpc_id" {
+  description = "The ID of the VPC to use for resources"
+  type        = string
+}

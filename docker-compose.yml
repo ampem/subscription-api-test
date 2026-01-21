@@ -44,6 +44,10 @@ services:
       - AWS_REGION=${AWS_REGION:-us-east-1}
       - TF_VAR_environment=${TF_VAR_environment:-staging}
       - TF_VAR_route53_zone_id=${TF_VAR_route53_zone_id}
+      - TF_VAR_mariadb_db_name=${TF_VAR_mariadb_db_name}
+      - TF_VAR_mariadb_db_username=${TF_VAR_mariadb_db_username}
+      - TF_VAR_mariadb_db_password=${TF_VAR_mariadb_db_password}
+      - TF_VAR_vpc_id=${TF_VAR_vpc_id}
     user: "${UID:-1000}:${GID:-1000}"
     entrypoint: [""]
     command: ["tail", "-f", "/dev/null"]
