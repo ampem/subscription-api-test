@@ -1,4 +1,12 @@
 #!/bin/bash
 set -e
 
-docker compose exec -w /terraform/staging terraform terraform apply
+ENV="${TF_VAR_environment:-staging}"
+
+if [ -n "$CI" ]; then
+    # Running in CI (GitHub Actions)
+    terraform -chdir="terraform/${ENV}" apply -auto-approve -var-file=terraform.tfvars.json
+else
+    # Running locally with docker compose
+    docker compose exec -w /terraform/${ENV} terraform terraform apply -var-file=terraform.tfvars.json
+fi

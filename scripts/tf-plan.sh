@@ -1,4 +1,12 @@
 #!/bin/bash
 set -e
 
-docker compose exec -w /terraform/staging terraform terraform plan
+ENV="${TF_VAR_environment:-staging}"
+
+if [ -n "$CI" ]; then
+    # Running in CI (GitHub Actions)
+    terraform -chdir="terraform/${ENV}" plan -var-file=terraform.tfvars.json
+else
+    # Running locally with docker compose
+    docker compose exec -w /terraform/${ENV} terraform terraform plan -var-file=terraform.tfvars.json
+fi

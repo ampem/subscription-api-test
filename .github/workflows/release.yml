@@ -115,3 +115,44 @@ jobs:
       #       echo "Migration failed!"
       #       exit 1
       #     fi
+
+  deploy:
+    needs: [release-please, build-and-push]
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      TF_VAR_environment: staging
+      TF_VAR_route53_zone_id: ${{ secrets.ROUTE53_ZONE_ID }}
+      TF_VAR_mariadb_db_name: ${{ secrets.MARIADB_DB_NAME }}
+      TF_VAR_mariadb_db_username: ${{ secrets.MARIADB_DB_USERNAME }}
+      TF_VAR_mariadb_db_password: ${{ secrets.MARIADB_DB_PASSWORD }}
+      TF_VAR_vpc_id: ${{ secrets.VPC_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ">=1.14.0"
+
+      - name: Terraform Init
+        working-directory: terraform/${{ env.TF_VAR_environment }}
+        run: terraform init
+
+      - name: Terraform Plan
+        run: make tf-plan
+
+      - name: Terraform Apply
+        run: make tf-apply
+
+      - name: Run database migrations
+        run: make migrate-lambda
