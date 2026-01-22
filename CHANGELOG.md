@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.1](https://github.com/ampem/subscription-api-test/compare/v0.3.0...v0.3.1) (2026-01-22)
+
+
+### Bug Fixes
+
+* Build Lambda images on every release ([f6fefc3](https://github.com/ampem/subscription-api-test/commit/f6fefc31fda9f2bfcc502b198d80ea9477a22f61))
+* Use vanilla git instead of paths-filter ([780fb37](https://github.com/ampem/subscription-api-test/commit/780fb37a0349261577d073914d15c04cccc17aa6))
+* Use vanilla git instead of paths-filter ([1c15e64](https://github.com/ampem/subscription-api-test/commit/1c15e64a3e64541f3bd8e51598941cd94c81e25a))
+
 ## [0.3.0](https://github.com/ampem/subscription-api-test/compare/v0.2.0...v0.3.0) (2026-01-22)
 
 
