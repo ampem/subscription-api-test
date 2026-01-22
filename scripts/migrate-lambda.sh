@@ -9,10 +9,10 @@ if [ ! -f "$TFVARS_FILE" ]; then
     exit 1
 fi
 
-MIGRATION_LEVEL=$(jq -r '.migration_level' "$TFVARS_FILE")
+MIGRATION_LEVEL=$(jq -r '.MIGRATION_LEVEL' "$TFVARS_FILE")
 
 if [ -z "$MIGRATION_LEVEL" ] || [ "$MIGRATION_LEVEL" = "null" ]; then
-    echo "Error: migration_level not found in $TFVARS_FILE"
+    echo "Error: MIGRATION_LEVEL not found in $TFVARS_FILE"
     exit 1
 fi
 

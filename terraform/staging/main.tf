@@ -16,17 +16,17 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = var.AWS_REGION
 }
 
 locals {
   project_name = "shade-subscription-api"
-  api_domain   = var.environment == "production" ? "api.shade.accretors.org" : "api.${var.environment}.shade.accretors.org"
+  api_domain   = var.ENVIRONMENT == "production" ? "api.shade.accretors.org" : "api.${var.ENVIRONMENT}.shade.accretors.org"
 }
 
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_role" {
-  name = "${local.project_name}-${var.environment}-lambda-role"
+  name = "${local.project_name}-${var.ENVIRONMENT}-lambda-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -49,7 +49,7 @@ resource "aws_iam_role_policy_attachment" "lambda_basic" {
 
 # ECR Repository
 resource "aws_ecr_repository" "api" {
-  name                 = "${local.project_name}-${var.environment}"
+  name                 = "${local.project_name}-${var.ENVIRONMENT}"
   image_tag_mutability = "MUTABLE"
   force_delete         = false
 
@@ -83,20 +83,20 @@ resource "aws_ecr_lifecycle_policy" "api" {
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
-    values = [var.vpc_id]
+    values = [var.VPC_ID]
   }
 }
 
 resource "aws_security_group" "lambda_sg" {
   name        = "lambda_sg"
   description = "Security group for Lambda"
-  vpc_id      = var.vpc_id  # Using variable as originally intended
+  vpc_id      = var.VPC_ID  # Using variable as originally intended
 }
 
 resource "aws_security_group" "rds_sg" {
   name        = "rds_sg"
   description = "Security group for RDS"
-  vpc_id      = var.vpc_id  # Using variable as originally intended
+  vpc_id      = var.VPC_ID  # Using variable as originally intended
 
   ingress {
     from_port   = 3306
@@ -120,16 +120,16 @@ resource "aws_security_group" "rds_sg" {
 
 # Lambda Function
 resource "aws_lambda_function" "api" {
-  function_name = "${local.project_name}-${var.environment}"
+  function_name = "${local.project_name}-${var.ENVIRONMENT}"
   role          = aws_iam_role.lambda_role.arn
   package_type  = "Image"
-  image_uri     = "${aws_ecr_repository.api.repository_url}:${var.image_tag}"
+  image_uri     = "${aws_ecr_repository.api.repository_url}:${var.IMAGE_TAG}"
   timeout       = 30
   memory_size   = 256
 
   environment {
     variables = {
-      ENVIRONMENT = var.environment
+      ENVIRONMENT = var.ENVIRONMENT
     }
   }
 
@@ -147,7 +147,7 @@ resource "aws_lambda_function_url" "api" {
 
 # API Gateway HTTP API
 resource "aws_apigatewayv2_api" "api" {
-  name          = "${local.project_name}-${var.environment}"
+  name          = "${local.project_name}-${var.ENVIRONMENT}"
   protocol_type = "HTTP"
 }
 
@@ -180,7 +180,7 @@ resource "aws_lambda_permission" "api_gateway" {
 
 # Route53 Hosted Zone (existing)
 data "aws_route53_zone" "main" {
-  zone_id = var.route53_zone_id
+  zone_id = var.ROUTE53_ZONE_ID
 }
 
 # ACM Certificate for custom domain
@@ -249,9 +249,9 @@ resource "aws_db_instance" "mariadb_staging" {
   engine_version    = "10.6"
   instance_class    = "db.t3.micro"
   allocated_storage = 5
-  db_name           = var.mariadb_db_name
-  username          = var.mariadb_db_username
-  password          = var.mariadb_db_password
+  db_name           = var.MARIADB_DB_NAME
+  username          = var.MARIADB_DB_USERNAME
+  password          = var.MARIADB_DB_PASSWORD
   skip_final_snapshot = true
   publicly_accessible = false
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
@@ -283,10 +283,10 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc_access" {
 
 # Migration Lambda Function (uses same image with different handler)
 resource "aws_lambda_function" "migrate" {
-  function_name = "${local.project_name}-${var.environment}-migrate"
+  function_name = "${local.project_name}-${var.ENVIRONMENT}-migrate"
   role          = aws_iam_role.lambda_role.arn
   package_type  = "Image"
-  image_uri     = "${aws_ecr_repository.api.repository_url}:${var.migration_image_tag}"
+  image_uri     = "${aws_ecr_repository.api.repository_url}:${var.MIGRATION_IMAGE_TAG}"
   timeout       = 300
   memory_size   = 256
 
@@ -296,8 +296,8 @@ resource "aws_lambda_function" "migrate" {
 
   environment {
     variables = {
-      ENVIRONMENT  = var.environment
-      DATABASE_URL = "mysql+pymysql://${var.mariadb_db_username}:${var.mariadb_db_password}@${aws_db_instance.mariadb_staging.endpoint}/${var.mariadb_db_name}"
+      ENVIRONMENT  = var.ENVIRONMENT
+      DATABASE_URL = "mysql+pymysql://${var.MARIADB_DB_USERNAME}:${var.MARIADB_DB_PASSWORD}@${aws_db_instance.mariadb_staging.endpoint}/${var.MARIADB_DB_NAME}"
     }
   }
 
