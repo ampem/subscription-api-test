@@ -42,12 +42,12 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_REGION=${AWS_REGION:-us-east-1}
-      - TF_VAR_environment=${TF_VAR_environment:-staging}
-      - TF_VAR_route53_zone_id=${TF_VAR_route53_zone_id}
-      - TF_VAR_mariadb_db_name=${TF_VAR_mariadb_db_name}
-      - TF_VAR_mariadb_db_username=${TF_VAR_mariadb_db_username}
-      - TF_VAR_mariadb_db_password=${TF_VAR_mariadb_db_password}
-      - TF_VAR_vpc_id=${TF_VAR_vpc_id}
+      - TF_VAR_ENVIRONMENT=${TF_VAR_ENVIRONMENT:-staging}
+      - TF_VAR_ROUTE53_ZONE_ID=${TF_VAR_ROUTE53_ZONE_ID}
+      - TF_VAR_MARIADB_DB_NAME=${TF_VAR_MARIADB_DB_NAME}
+      - TF_VAR_MARIADB_DB_USERNAME=${TF_VAR_MARIADB_DB_USERNAME}
+      - TF_VAR_MARIADB_DB_PASSWORD=${TF_VAR_MARIADB_DB_PASSWORD}
+      - TF_VAR_VPC_ID=${TF_VAR_VPC_ID}
     user: "${UID:-1000}:${GID:-1000}"
     entrypoint: [""]
     command: ["tail", "-f", "/dev/null"]

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-ENV="${TF_VAR_environment:-staging}"
+ENV="${TF_VAR_ENVIRONMENT:-staging}"
 
 if [ -n "$CI" ]; then
     # Running in CI (GitHub Actions)

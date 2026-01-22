@@ -2,13 +2,13 @@
 
 help:
 	@echo "Available targets:"
-	@echo "  tf-plan          - Run terraform plan (uses TF_VAR_environment, defaults to staging)"
-	@echo "  tf-apply         - Run terraform apply (uses TF_VAR_environment, defaults to staging)"
+	@echo "  tf-plan          - Run terraform plan (uses TF_VAR_ENVIRONMENT, defaults to staging)"
+	@echo "  tf-apply         - Run terraform apply (uses TF_VAR_ENVIRONMENT, defaults to staging)"
 	@echo "  migration        - Create a new alembic migration (usage: make migration name='description')"
 	@echo "  migrate          - Run all pending migrations (alembic upgrade head)"
 	@echo "  migrate-to       - Migrate to a specific version (usage: make migrate-to version=abc123)"
 	@echo "  migrate-list     - List all migrations (* marks current)"
-	@echo "  migrate-lambda   - Run migrations via Lambda (uses TF_VAR_environment, reads migration_level from tfvars.json)"
+	@echo "  migrate-lambda   - Run migrations via Lambda (uses TF_VAR_ENVIRONMENT, reads migration_level from tfvars.json)"
 	@echo "  test             - Run tests"
 	@echo "  lint-commit      - Lint the most recent commit message"
 	@echo "  ecr-push         - Build and push API image to ECR (usage: make ecr-push env=staging region=us-east-1 tag=v1.0.0)"
