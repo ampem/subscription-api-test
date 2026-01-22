@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.6](https://github.com/ampem/subscription-api-test/compare/v0.3.5...v0.3.6) (2026-01-22)
+
+
+### Bug Fixes
+
+* Bump Migration Lambda image version ([d5831b2](https://github.com/ampem/subscription-api-test/commit/d5831b2d56d8105d4bdf1cc74f2620ce51901fa9))
+
 ## [0.3.5](https://github.com/ampem/subscription-api-test/compare/v0.3.4...v0.3.5) (2026-01-22)
 
 
