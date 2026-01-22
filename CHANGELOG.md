@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/ampem/subscription-api-test/compare/v0.2.0...v0.3.0) (2026-01-22)
+
+
+### Features
+
+* add migration Lambda and automated deployments ([647e787](https://github.com/ampem/subscription-api-test/commit/647e787c90632ebd4ef33be01a2a2dc188a6b53d))
+
 ## [0.2.0](https://github.com/ampem/subscription-api-test/compare/v0.1.0...v0.2.0) (2026-01-22)
 
 
