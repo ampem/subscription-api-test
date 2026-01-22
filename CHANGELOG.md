@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/ampem/subscription-api-test/compare/v0.1.0...v0.2.0) (2026-01-22)
+
+
+### Features
+
+* **ci:** add ECR build and push on release ([3dfc19d](https://github.com/ampem/subscription-api-test/commit/3dfc19dd7002c7b317992a4b8e1f2b9b26d8d059))
+
 ## 0.1.0 (2026-01-21)
 
 
