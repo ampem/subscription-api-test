@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.4](https://github.com/ampem/subscription-api-test/compare/v0.3.3...v0.3.4) (2026-01-22)
+
+
+### Bug Fixes
+
+* Deploy environment variables ([cf6f540](https://github.com/ampem/subscription-api-test/commit/cf6f54018b4b2c1a25574278abf2594247db5a96))
+
 ## [0.3.3](https://github.com/ampem/subscription-api-test/compare/v0.3.2...v0.3.3) (2026-01-22)
 
 
