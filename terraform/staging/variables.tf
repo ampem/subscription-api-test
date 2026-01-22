@@ -21,6 +21,11 @@ variable "migration_image_tag" {
   default     = "latest"
 }
 
+variable "migration_level" {
+  description = "Alembic migration revision to migrate to"
+  type        = string
+}
+
 variable "route53_zone_id" {
   description = "Route53 hosted zone ID"
   type        = string
