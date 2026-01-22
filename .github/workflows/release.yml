@@ -48,8 +48,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if api folder changed
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          base: ${{ needs.release-please.outputs.tag_name }}~1
+          filters: |
+            api:
+              - 'api/**'
 
       - name: Configure AWS credentials
+        if: steps.changes.outputs.api == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -57,10 +69,12 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
+        if: steps.changes.outputs.api == 'true'
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push image to Amazon ECR
+        if: steps.changes.outputs.api == 'true'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
@@ -72,3 +86,44 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           echo "Pushed $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           echo "Pushed $ECR_REGISTRY/$ECR_REPOSITORY:latest"
+
+      - name: Update Lambda functions to use new image
+        if: steps.changes.outputs.api == 'true'
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+          # Update API Lambda
+          aws lambda update-function-code \
+            --function-name shade-subscription-api-staging \
+            --image-uri "$IMAGE_URI"
+
+          # Update Migration Lambda
+          aws lambda update-function-code \
+            --function-name shade-subscription-api-staging-migrate \
+            --image-uri "$IMAGE_URI"
+
+          # Wait for updates to complete
+          aws lambda wait function-updated --function-name shade-subscription-api-staging
+          aws lambda wait function-updated --function-name shade-subscription-api-staging-migrate
+
+      - name: Run database migrations
+        if: steps.changes.outputs.api == 'true'
+        run: |
+          aws lambda invoke \
+            --function-name shade-subscription-api-staging-migrate \
+            --payload '{"revision": "head"}' \
+            --cli-binary-format raw-in-base64-out \
+            response.json
+
+          echo "Migration response:"
+          cat response.json
+
+          # Check if migration was successful
+          if grep -q '"statusCode": 500' response.json; then
+            echo "Migration failed!"
+            exit 1
+          fi

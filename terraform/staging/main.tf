@@ -274,3 +274,35 @@ resource "aws_iam_role_policy" "lambda_rds_access" {
     ]
   })
 }
+
+# IAM Policy for VPC access (required for Lambda in VPC)
+resource "aws_iam_role_policy_attachment" "lambda_vpc_access" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+# Migration Lambda Function (uses same image with different handler)
+resource "aws_lambda_function" "migrate" {
+  function_name = "${local.project_name}-${var.environment}-migrate"
+  role          = aws_iam_role.lambda_role.arn
+  package_type  = "Image"
+  image_uri     = "${aws_ecr_repository.api.repository_url}:${var.image_tag}"
+  timeout       = 300
+  memory_size   = 256
+
+  image_config {
+    command = ["migrate.handler"]
+  }
+
+  environment {
+    variables = {
+      ENVIRONMENT  = var.environment
+      DATABASE_URL = "mysql+pymysql://${var.mariadb_db_username}:${var.mariadb_db_password}@${aws_db_instance.mariadb_staging.endpoint}/${var.mariadb_db_name}"
+    }
+  }
+
+  vpc_config {
+    subnet_ids         = data.aws_subnets.private.ids
+    security_group_ids = [aws_security_group.lambda_sg.id]
+  }
+}
