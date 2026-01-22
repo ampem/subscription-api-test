@@ -15,6 +15,12 @@ variable "image_tag" {
   default     = "latest"
 }
 
+variable "migration_image_tag" {
+  description = "Docker image tag for the migration Lambda function"
+  type        = string
+  default     = "latest"
+}
+
 variable "route53_zone_id" {
   description = "Route53 hosted zone ID"
   type        = string

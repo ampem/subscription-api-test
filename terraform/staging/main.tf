@@ -286,7 +286,7 @@ resource "aws_lambda_function" "migrate" {
   function_name = "${local.project_name}-${var.environment}-migrate"
   role          = aws_iam_role.lambda_role.arn
   package_type  = "Image"
-  image_uri     = "${aws_ecr_repository.api.repository_url}:${var.image_tag}"
+  image_uri     = "${aws_ecr_repository.api.repository_url}:${var.migration_image_tag}"
   timeout       = 300
   memory_size   = 256
 
