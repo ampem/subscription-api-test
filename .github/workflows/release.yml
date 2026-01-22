@@ -129,12 +129,12 @@ jobs:
       DB_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
       DB_USER: ${{ secrets.DB_USER }}
       ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-      TF_VAR_ENVIRONMENT: ${{ secret.TF_VAR_ENVIRONMENT }}
-      TF_VAR_MARIADB_DB_NAME: ${{ secret.TF_VAR_MARIADB_DB_NAME }}
-      TF_VAR_MARIADB_DB_PASSWORD: ${{ secret.TF_VAR_MARIADB_DB_PASSWORD }}
-      TF_VAR_MARIADB_DB_USERNAME: ${{ secret.TF_VAR_MARIADB_DB_USERNAME }}
-      TF_VAR_ROUTE53_ZONE_ID: ${{ secret.TF_VAR_ROUTE53_ZONE_ID }}
-      TF_VAR_VPC_ID: ${{ secret.TF_VAR_VPC_ID }}
+      TF_VAR_ENVIRONMENT: ${{ secrets.TF_VAR_ENVIRONMENT }}
+      TF_VAR_MARIADB_DB_NAME: ${{ secrets.TF_VAR_MARIADB_DB_NAME }}
+      TF_VAR_MARIADB_DB_PASSWORD: ${{ secrets.TF_VAR_MARIADB_DB_PASSWORD }}
+      TF_VAR_MARIADB_DB_USERNAME: ${{ secrets.TF_VAR_MARIADB_DB_USERNAME }}
+      TF_VAR_ROUTE53_ZONE_ID: ${{ secrets.TF_VAR_ROUTE53_ZONE_ID }}
+      TF_VAR_VPC_ID: ${{ secrets.TF_VAR_VPC_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
