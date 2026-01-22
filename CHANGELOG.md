@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.3](https://github.com/ampem/subscription-api-test/compare/v0.3.2...v0.3.3) (2026-01-22)
+
+
+### Bug Fixes
+
+* Use uniform case for environment variables ([67bbb1f](https://github.com/ampem/subscription-api-test/commit/67bbb1ff01ed72184fe48c4a5c74f3f79d1e77c5))
+* Use uniform case for environment variables ([bc84f2e](https://github.com/ampem/subscription-api-test/commit/bc84f2e540c79b9ed41b5c8c799eec6438d8478b))
+
 ## [0.3.2](https://github.com/ampem/subscription-api-test/compare/v0.3.1...v0.3.2) (2026-01-22)
 
 
