@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.5](https://github.com/ampem/subscription-api-test/compare/v0.3.4...v0.3.5) (2026-01-22)
+
+
+### Bug Fixes
+
+* Correct secret references ([b2cba0d](https://github.com/ampem/subscription-api-test/commit/b2cba0d3857be78e64e4f27ddcfec03f56085873))
+* Correctly map env vars to Terraform variables ([1c716c7](https://github.com/ampem/subscription-api-test/commit/1c716c7c9ed56504280a070afe4d7e8189bd2620))
+
 ## [0.3.4](https://github.com/ampem/subscription-api-test/compare/v0.3.3...v0.3.4) (2026-01-22)
 
 
