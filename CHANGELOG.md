@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.2](https://github.com/ampem/subscription-api-test/compare/v0.3.1...v0.3.2) (2026-01-22)
+
+
+### Bug Fixes
+
+* Add migrate-list makefile command ([1368fc1](https://github.com/ampem/subscription-api-test/commit/1368fc1916c5cf72822adf1e20369cabc56fc807))
+* Add migration_level and environment variables ([5d43ea4](https://github.com/ampem/subscription-api-test/commit/5d43ea4dbcf5689be6bada5ec101bed19da5fdb6))
+* Add scripts/migrate-lambda.sh ([ecc8b8b](https://github.com/ampem/subscription-api-test/commit/ecc8b8b1d6f6698bdb73327d1c972f8d4b0707b9))
+* Deploy images with Terraform ([4ee4882](https://github.com/ampem/subscription-api-test/commit/4ee48821ecfc680b880a6c9b16a9d77353a48f7a))
+* Deploy versions based on data in terraform.tfvars ([67ea8b7](https://github.com/ampem/subscription-api-test/commit/67ea8b71e0ac3001e8b05713df108252d6823f97))
+
 ## [0.3.1](https://github.com/ampem/subscription-api-test/compare/v0.3.0...v0.3.1) (2026-01-22)
 
 
