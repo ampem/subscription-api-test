@@ -53,12 +53,24 @@ jobs:
 
       - name: Check if api folder changed
         id: changes
-        uses: dorny/paths-filter@v3
-        with:
-          base: ${{ needs.release-please.outputs.tag_name }}~1
-          filters: |
-            api:
-              - 'api/**'
+        run: |
+          # Get the previous tag
+          CURRENT_TAG="${{ needs.release-please.outputs.tag_name }}"
+          PREV_TAG=$(git tag --sort=-version:refname | grep -A1 "^${CURRENT_TAG}$" | tail -1)
+
+          if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "$CURRENT_TAG" ]; then
+            echo "No previous tag found, assuming api changed"
+            echo "api=true" >> $GITHUB_OUTPUT
+          else
+            echo "Comparing $PREV_TAG to $CURRENT_TAG"
+            if git diff --name-only "$PREV_TAG" "$CURRENT_TAG" | grep -q "^api/"; then
+              echo "api folder has changes"
+              echo "api=true" >> $GITHUB_OUTPUT
+            else
+              echo "api folder has no changes"
+              echo "api=false" >> $GITHUB_OUTPUT
+            fi
+          fi
 
       - name: Configure AWS credentials
         if: steps.changes.outputs.api == 'true'
