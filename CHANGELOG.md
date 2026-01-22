@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.7](https://github.com/ampem/subscription-api-test/compare/v0.3.6...v0.3.7) (2026-01-22)
+
+
+### Bug Fixes
+
+* Upgrade migration image to the latest version ([9e52a44](https://github.com/ampem/subscription-api-test/commit/9e52a440e87db7188c2c3ff00117d483d7acf628))
+
 ## [0.3.6](https://github.com/ampem/subscription-api-test/compare/v0.3.5...v0.3.6) (2026-01-22)
 
 
