@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.8](https://github.com/ampem/subscription-api-test/compare/v0.3.7...v0.3.8) (2026-01-23)
+
+
+### Bug Fixes
+
+* Use a postgres instance ([66d8723](https://github.com/ampem/subscription-api-test/commit/66d87233f70ab791cd156040372bbdbe1841b05c))
+* Use a postgres instance ([268cad2](https://github.com/ampem/subscription-api-test/commit/268cad2296089066186f80dc618bc39912eaeeaa))
+
 ## [0.3.7](https://github.com/ampem/subscription-api-test/compare/v0.3.6...v0.3.7) (2026-01-22)
 
 
