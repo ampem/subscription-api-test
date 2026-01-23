@@ -99,16 +99,22 @@ resource "aws_security_group" "rds_sg" {
   vpc_id      = var.VPC_ID  # Using variable as originally intended
 
   ingress {
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
     security_groups = [aws_security_group.lambda_sg.id]  # Only allow from Lambda SG
   }
   ingress {
-    from_port   = 3306
-    to_port     = 3306
+    from_port   = 5432
+    to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = ["15.235.193.126/32"]  # Allow access from bastion host
+  }
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["217.46.64.84/32"]  # Allow access from laptop
   }
   egress {
     from_port   = 0
@@ -244,16 +250,16 @@ resource "aws_route53_record" "api" {
   }
 }
 
-resource "aws_db_instance" "mariadb_staging" {
-  engine            = "mariadb"
-  engine_version    = "10.6"
-  instance_class    = "db.t3.micro"
-  allocated_storage = 5
-  db_name           = var.MARIADB_DB_NAME
-  username          = var.MARIADB_DB_USERNAME
-  password          = var.MARIADB_DB_PASSWORD
-  skip_final_snapshot = true
-  publicly_accessible = false
+resource "aws_db_instance" "postgres" {
+  engine                 = "postgres"
+  engine_version         = "18.1"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 5
+  db_name                = var.POSTGRES_DB_NAME
+  username               = var.POSTGRES_DB_USERNAME
+  password               = var.POSTGRES_DB_PASSWORD
+  skip_final_snapshot    = true
+  publicly_accessible    = true
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 }
 
@@ -269,7 +275,7 @@ resource "aws_iam_role_policy" "lambda_rds_access" {
         Action = [
           "rds-db:connect"
         ]
-        Resource = aws_db_instance.mariadb_staging.arn
+        Resource = aws_db_instance.postgres.arn
       }
     ]
   })
@@ -297,7 +303,7 @@ resource "aws_lambda_function" "migrate" {
   environment {
     variables = {
       ENVIRONMENT  = var.ENVIRONMENT
-      DATABASE_URL = "mysql+pymysql://${var.MARIADB_DB_USERNAME}:${var.MARIADB_DB_PASSWORD}@${aws_db_instance.mariadb_staging.endpoint}/${var.MARIADB_DB_NAME}"
+      DATABASE_URL = "postgresql+psycopg2://${var.POSTGRES_DB_USERNAME}:${var.POSTGRES_DB_PASSWORD}@${aws_db_instance.postgres.endpoint}/${var.POSTGRES_DB_NAME}"
     }
   }
 
