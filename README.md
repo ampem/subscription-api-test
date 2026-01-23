@@ -82,7 +82,13 @@ docker compose exec api python scripts/generate_seed_data.py --users 100 --outpu
 ### Apply seed data to database
 
 ```bash
-docker compose exec db mariadb -u shade -pshade shade < api/seed_data.sql
+docker compose exec db psql -U shade -d shade -f /app/seed_data.sql
+```
+
+Or pipe directly:
+
+```bash
+cat api/seed_data.sql | docker compose exec -T db psql -U shade -d shade
 ```
 
 ### What the seed data includes
@@ -192,6 +198,34 @@ docker compose exec terraform terraform apply
 ```bash
 docker compose exec aws aws sts get-caller-identity
 docker compose exec aws aws s3 ls
+```
+
+## Lambda Logs
+
+View Lambda function logs from CloudWatch using the AWS CLI.
+
+### Tail logs (follow mode)
+
+Stream logs in real-time as they arrive:
+
+```bash
+aws logs tail /aws/lambda/shade-subscription-api-staging --follow
+```
+
+### View recent logs
+
+Show logs from the last hour:
+
+```bash
+aws logs tail /aws/lambda/shade-subscription-api-staging --since 1h
+```
+
+### Migration Lambda logs
+
+For the migration Lambda function:
+
+```bash
+aws logs tail /aws/lambda/shade-subscription-api-staging-migrate --follow
 ```
 
 ## Architecture Diagram
