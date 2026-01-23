@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.10](https://github.com/ampem/subscription-api-test/compare/v0.3.9...v0.3.10) (2026-01-23)
+
+
+### Bug Fixes
+
+* Bump Lambda versions to v0.3.9 ([f1cef4e](https://github.com/ampem/subscription-api-test/commit/f1cef4ef7ddab7d9c78fd083d1fc4f2359eda9fa))
+
 ## [0.3.9](https://github.com/ampem/subscription-api-test/compare/v0.3.8...v0.3.9) (2026-01-23)
 
 
