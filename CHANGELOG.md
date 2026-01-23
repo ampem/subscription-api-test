@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.9](https://github.com/ampem/subscription-api-test/compare/v0.3.8...v0.3.9) (2026-01-23)
+
+
+### Bug Fixes
+
+* Remove old references to mariadb and update lambdas ([99d80fd](https://github.com/ampem/subscription-api-test/commit/99d80fd8c0f2a5a79807bde3b8d8bd0e93318c0f))
+* Update more MARIADB references ([858bd43](https://github.com/ampem/subscription-api-test/commit/858bd436d102a27100dde791d18ef4cc5fc424cb))
+
 ## [0.3.8](https://github.com/ampem/subscription-api-test/compare/v0.3.7...v0.3.8) (2026-01-23)
 
 
