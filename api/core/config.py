@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     environment: str = "local"
-    database_url: str = "mysql+pymysql://shade:shade@localhost:3306/shade"
+    database_url: str = "postgresql+psycopg2://shade:shade@localhost:5432/shade"
 
     class Config:
         env_file = ".env"

@@ -10,25 +10,24 @@ services:
     environment:
       - HOME=/app
       - ENVIRONMENT=local
-      - DATABASE_URL=mysql+pymysql://${DB_USER:-shade}:${DB_PASSWORD:-shade}@db:3306/${DB_NAME:-shade}
+      - DATABASE_URL=postgresql+psycopg2://${DB_USER:-shade}:${DB_PASSWORD:-shade}@db:5432/${DB_NAME:-shade}
     user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       db:
         condition: service_healthy
 
   db:
-    image: mariadb:11
+    image: postgres:18
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-rootpassword}
-      - MARIADB_DATABASE=${DB_NAME:-shade}
-      - MARIADB_USER=${DB_USER:-shade}
-      - MARIADB_PASSWORD=${DB_PASSWORD:-shade}
+      - POSTGRES_DB=${DB_NAME:-shade}
+      - POSTGRES_USER=${DB_USER:-shade}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-shade}
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-shade} -d ${DB_NAME:-shade}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -44,10 +43,10 @@ services:
       - AWS_REGION=${AWS_REGION:-us-east-1}
       - TF_VAR_ENVIRONMENT=${TF_VAR_ENVIRONMENT:-staging}
       - TF_VAR_ROUTE53_ZONE_ID=${TF_VAR_ROUTE53_ZONE_ID}
-      - TF_VAR_MARIADB_DB_NAME=${TF_VAR_MARIADB_DB_NAME}
-      - TF_VAR_MARIADB_DB_USERNAME=${TF_VAR_MARIADB_DB_USERNAME}
-      - TF_VAR_MARIADB_DB_PASSWORD=${TF_VAR_MARIADB_DB_PASSWORD}
       - TF_VAR_VPC_ID=${TF_VAR_VPC_ID}
+      - TF_VAR_POSTGRES_DB_NAME=${TF_VAR_POSTGRES_DB_NAME}
+      - TF_VAR_POSTGRES_DB_USERNAME=${TF_VAR_POSTGRES_DB_USERNAME}
+      - TF_VAR_POSTGRES_DB_PASSWORD=${TF_VAR_POSTGRES_DB_PASSWORD}
     user: "${UID:-1000}:${GID:-1000}"
     entrypoint: [""]
     command: ["tail", "-f", "/dev/null"]

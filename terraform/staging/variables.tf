@@ -31,20 +31,20 @@ variable "ROUTE53_ZONE_ID" {
   type        = string
 }
 
-variable "MARIADB_DB_NAME" {
-  description = "The name of the MariaDB database"
+variable "POSTGRES_DB_NAME" {
+  description = "The name of the PostgreSQL database"
   type        = string
   sensitive   = true
 }
 
-variable "MARIADB_DB_USERNAME" {
-  description = "The username for the MariaDB database"
+variable "POSTGRES_DB_USERNAME" {
+  description = "The username for the PostgreSQL database"
   type        = string
   sensitive   = true
 }
 
-variable "MARIADB_DB_PASSWORD" {
-  description = "The password for the MariaDB database"
+variable "POSTGRES_DB_PASSWORD" {
+  description = "The password for the PostgreSQL database"
   type        = string
   sensitive   = true
 }
