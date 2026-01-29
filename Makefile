@@ -1,4 +1,4 @@
-.PHONY: tf-plan tf-apply migration migrate migrate-to migrate-list migrate-lambda test lint-commit ecr-push help
+.PHONY: tf-plan tf-apply migration migrate migrate-to migrate-list migrate-lambda test lint-commit ecr-push frontend help
 
 help:
 	@echo "Available targets:"
@@ -12,6 +12,7 @@ help:
 	@echo "  test             - Run tests"
 	@echo "  lint-commit      - Lint the most recent commit message"
 	@echo "  ecr-push         - Build and push API image to ECR (usage: make ecr-push env=staging region=us-east-1 tag=v1.0.0)"
+	@echo "  frontend         - Run the frontend dev server"
 
 tf-plan:
 	@./scripts/tf-plan.sh
@@ -42,3 +43,6 @@ lint-commit:
 
 ecr-push:
 	@./scripts/ecr-push.sh "$(env)" "$(region)" "$(tag)"
+
+frontend:
+	docker compose up frontend --build

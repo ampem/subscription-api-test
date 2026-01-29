@@ -90,7 +90,14 @@ data "aws_subnets" "private" {
 resource "aws_security_group" "lambda_sg" {
   name        = "lambda_sg"
   description = "Security group for Lambda"
-  vpc_id      = var.VPC_ID  # Using variable as originally intended
+  vpc_id      = var.VPC_ID
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "rds_sg" {
@@ -135,7 +142,8 @@ resource "aws_lambda_function" "api" {
 
   environment {
     variables = {
-      ENVIRONMENT = var.ENVIRONMENT
+      ENVIRONMENT  = var.ENVIRONMENT
+      DATABASE_URL = "postgresql+psycopg2://${var.POSTGRES_DB_USERNAME}:${var.POSTGRES_DB_PASSWORD}@${aws_db_instance.postgres.endpoint}/${var.POSTGRES_DB_NAME}"
     }
   }
 
